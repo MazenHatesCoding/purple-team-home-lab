@@ -1,0 +1,40 @@
+# NEVER commit malware, payloads, or offensive binaries to this repo.
+# This project is documentation-only; keep all executables out.
+
+# Payloads / reverse shells / droppers
+*.msi
+*.exe
+*.dll
+*.bin
+setup.msi
+updater.exe
+m.exe
+
+# Mimikatz / credential-dumping tooling (binaries only — screenshots are kept)
+mimikatz*.exe
+m.exe
+
+# Hash/credential artifacts and wordlists
+*.hash
+*.ntds
+*.lsass
+*.dmp
+hashes.txt
+small.txt
+rockyou*
+
+# Loot / capture dumps
+loot/
+dumps/
+*.pcap
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# Keep LinkedIn draft local only, not on the public repo
+LINKEDIN.md

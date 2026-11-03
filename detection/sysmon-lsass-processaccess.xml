@@ -1,0 +1,28 @@
+<!--
+  Sysmon ProcessAccess (Event ID 10) block, the FIRST approach I tried for
+  detecting credential dumping (LSASS access), kept here for transparency.
+
+  Goal:
+    Log when any process opens a handle to lsass.exe with the access rights
+    typically requested by credential-dumping tools (0x1010 / 0x1410 / 0x143A).
+
+  Why it is NOT the detection that shipped:
+    In this lab the ProcessAccess channel did not reliably produce event 10
+    records for the LSASS access (see screenshots/09-wazuh-lsass-gap.png:
+    a Wazuh search for data.win.system.eventID: "10" returned "No results").
+    Rather than depend on a signal that was not firing, I pivoted to a
+    command-line rule (see local_rules.xml) which is a standard and more
+    reliable detection method. This file documents the approach that was
+    attempted first.
+
+  Usage (reference):
+    This block goes inside the <ProcessAccess onmatch="include"> section of a
+    Sysmon configuration. The SwiftOnSecurity config was the baseline used.
+-->
+<ProcessAccess onmatch="include">
+  <!-- Flag handles opened against LSASS with dump-capable access masks -->
+  <TargetImage condition="image">lsass.exe</TargetImage>
+  <GrantedAccess condition="is">0x1010</GrantedAccess>
+  <GrantedAccess condition="is">0x1410</GrantedAccess>
+  <GrantedAccess condition="is">0x143a</GrantedAccess>
+</ProcessAccess>

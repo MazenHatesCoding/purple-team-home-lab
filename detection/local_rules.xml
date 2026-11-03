@@ -1,0 +1,28 @@
+<!--
+  Custom Wazuh rule, credential-dumping (Mimikatz) command-line detection
+  File location on the SIEM: /var/ossec/etc/rules/local_rules.xml
+  Author: Mazen Ashraf  |  Lab project  |  2026-11-03
+
+  Context:
+    The LSASS-access approach (Sysmon ProcessAccess / event 10) proved
+    unreliable in this lab, so detection was pivoted to the command line of
+    the launching process (Sysmon event 1). This matches the known command
+    strings that Mimikatz-style tooling uses regardless of the binary name.
+
+  Result:
+    Before this rule -> running Mimikatz produced no alert.
+    After this rule  -> every run raises a level-15 alert (rule.id 100101)
+                        tagged MITRE ATT&CK T1003.001.
+-->
+<group name="local,sysmon,">
+
+  <rule id="100101" level="15">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(sekurlsa|privilege::debug|lsadump|logonpasswords|mimikatz)</field>
+    <description>Credential dumping tool (Mimikatz) command detected</description>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+  </rule>
+
+</group>
